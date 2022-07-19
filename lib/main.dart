@@ -8,12 +8,13 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
     options: const FirebaseOptions(
-      apiKey: "AIzaSyA3uDmE4m4liXz9jLMxK5Y6-CmDXCpabPw",
-      appId: "1:113243448035:web:2a73d552d5aa60f0485bd6",
-      messagingSenderId: "113243448035",
-      projectId: "holedowebsite",
-      storageBucket: "holedowebsite.appspot.com",
-    ),
+        apiKey: "AIzaSyA3uDmE4m4liXz9jLMxK5Y6-CmDXCpabPw",
+        authDomain: "holedowebsite.firebaseapp.com",
+        appId: "1:113243448035:web:2a73d552d5aa60f0485bd6",
+        messagingSenderId: "113243448035",
+        projectId: "holedowebsite",
+        storageBucket: "holedowebsite.appspot.com",
+        measurementId: "G-CVSND3NPHM"),
   );
   runApp(const MyApp());
 }

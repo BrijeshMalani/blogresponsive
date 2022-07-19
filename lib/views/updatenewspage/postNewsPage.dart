@@ -36,66 +36,6 @@ class _PostNewsPageState extends State<PostNewsPage> {
   final nshortdescController = TextEditingController();
   final nlongdescController = TextEditingController();
 
-  // String? _fileName;
-  // List<PlatformFile>? _paths;
-  // String? _directoryPath;
-  // String? _extension;
-  // bool _loadingPath = false;
-  // bool _multiPick = false;
-  // FileType _pickingType = FileType.any;
-  // TextEditingController _controller = TextEditingController();
-  //
-  // void _openFileExplorer() async {
-  //   setState(() => _loadingPath = true);
-  //   try {
-  //     _directoryPath = null;
-  //     _paths = (await FilePicker.platform.pickFiles(
-  //       type: _pickingType,
-  //       allowMultiple: _multiPick,
-  //       allowedExtensions: (_extension?.isNotEmpty ?? false)
-  //           ? _extension?.replaceAll(' ', '').split(',')
-  //           : null,
-  //     ))
-  //         ?.files;
-  //   } on PlatformException catch (e) {
-  //     print("Unsupported operation" + e.toString());
-  //   } catch (ex) {
-  //     print(ex);
-  //   }
-  //   if (!mounted) return;
-  //   setState(() {
-  //     _loadingPath = false;
-  //     print(_paths!.first.extension);
-  //     _fileName =
-  //         _paths != null ? _paths!.map((e) => e.name).toString() : '...';
-  //   });
-  // }
-  //
-  // void _clearCachedFiles() {
-  //   FilePicker.platform.clearTemporaryFiles().then((result) {
-  //     ScaffoldMessenger.of(context).showSnackBar(
-  //       SnackBar(
-  //         backgroundColor: result! ? Colors.green : Colors.red,
-  //         content: Text((result
-  //             ? 'Temporary files removed with success.'
-  //             : 'Failed to clean temporary files')),
-  //       ),
-  //     );
-  //   });
-  // }
-  //
-  // void _selectFolder() {
-  //   FilePicker.platform.getDirectoryPath().then((value) {
-  //     setState(() => _directoryPath = value);
-  //   });
-  // }
-  //
-  // @override
-  // void initState() {
-  //   super.initState();
-  //   _controller.addListener(() => _extension = _controller.text);
-  // }
-
   @override
   void dispose() {
     ntitleController.dispose();
@@ -156,66 +96,6 @@ class _PostNewsPageState extends State<PostNewsPage> {
   }
 
   ///=====image send=====
-  File? imageFile;
-
-  //for get image from gallery
-  Future getImage() async {
-    ImagePicker _picker = ImagePicker();
-
-    await _picker.pickImage(source: ImageSource.gallery).then((xFile) {
-      if (xFile != null) {
-        imageFile = File(xFile.path);
-        print(imageFile);
-        // uploadImage();
-      }
-    });
-  }
-
-  Future uploadImage() async {
-    String fileName = Uuid().v1();
-    int status = 1;
-
-    await _firestore
-        .collection('newsimage')
-        .doc("$imageFile")
-        .collection('post')
-        .doc(fileName)
-        .set({
-      "sendby": imageFile,
-      "message": "",
-      "type": "img",
-      "time": FieldValue.serverTimestamp(),
-    });
-
-    var ref =
-        FirebaseStorage.instance.ref().child('images').child("$fileName.jpg");
-
-    var uploadTask = await ref.putFile(imageFile!).catchError((error) async {
-      await _firestore
-          .collection('newsimage')
-          .doc("$imageFile")
-          .collection('post')
-          .doc(fileName)
-          .delete();
-
-      status = 0;
-    });
-
-    if (status == 1) {
-      String imageUrl = await uploadTask.ref.getDownloadURL();
-
-      await _firestore
-          .collection('newsimage')
-          .doc("$imageFile")
-          .collection('post')
-          .doc(fileName)
-          .update({"message": imageUrl});
-
-      print(imageUrl);
-    }
-  }
-
-  /// 2 image
 
   File _file = File("zz");
   Uint8List webImage = Uint8List(10);
@@ -259,7 +139,7 @@ class _PostNewsPageState extends State<PostNewsPage> {
 //     }
 //   }
 
-  bool showButton = false;
+  // bool showButton = false;
 
   @override
   Widget build(BuildContext context) {
@@ -287,17 +167,18 @@ class _PostNewsPageState extends State<PostNewsPage> {
                           child: Container(
                             height: 100,
                             width: 100,
-                            // decoration: BoxDecoration(
-                            //   image: DecorationImage(
-                            //     image: Image.memory(imageFile),
-                            //   ),
-                            // ),
-                            color: Colors.grey,
+                            decoration: BoxDecoration(
+                              image: DecorationImage(
+                                image: MemoryImage(webImage),
+                              ),
+                              color: Colors.grey,
+                            ),
                             child: Center(
                               child: Icon(
                                 Icons.add,
                                 color: Colors.white,
                               ),
+                              // Image.memory(webImage),
                             ),
                           ),
                         ),
@@ -445,8 +326,7 @@ class _PostNewsPageState extends State<PostNewsPage> {
                                               crossAxisAlignment:
                                                   CrossAxisAlignment.start,
                                               children: [
-                                                // Image.network(
-                                                //     "${snapshot.data?.docs[index]['imgurl']}"),
+                                                Image.memory(webImage),
                                                 SizedBox(height: kwidth * 0.01),
                                                 Text(
                                                   "${snapshot.data?.docs[index]['title']}",
